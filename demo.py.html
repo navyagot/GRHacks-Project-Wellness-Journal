@@ -1,0 +1,149 @@
+<html>
+<head>
+<title>demo.py</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #7a7e85;}
+.s3 { color: #bcbec4;}
+.s4 { color: #5f826b; font-style: italic;}
+.s5 { color: #6aab73;}
+.s6 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+demo.py</font>
+</center></td></tr></table>
+<pre><span class="s0">import </span><span class="s1">json</span>
+<span class="s0">import </span><span class="s1">os</span>
+
+
+<span class="s2"># Function to load entries for a specific user</span>
+<span class="s0">def </span><span class="s1">load_entries</span><span class="s3">(</span><span class="s1">username</span><span class="s3">):</span>
+    <span class="s4">&quot;&quot;&quot;Load journal entries from a JSON file for a specific user.&quot;&quot;&quot;</span>
+    <span class="s1">filename </span><span class="s3">= </span><span class="s5">f'</span><span class="s0">{</span><span class="s1">username</span><span class="s0">}</span><span class="s5">_journal_entries.json'</span>
+    <span class="s0">if </span><span class="s1">os</span><span class="s3">.</span><span class="s1">path</span><span class="s3">.</span><span class="s1">exists</span><span class="s3">(</span><span class="s1">filename</span><span class="s3">):</span>
+        <span class="s0">with </span><span class="s1">open</span><span class="s3">(</span><span class="s1">filename</span><span class="s3">, </span><span class="s5">'r'</span><span class="s3">) </span><span class="s0">as </span><span class="s1">file</span><span class="s3">:</span>
+            <span class="s0">try</span><span class="s3">:</span>
+                <span class="s1">data </span><span class="s3">= </span><span class="s1">json</span><span class="s3">.</span><span class="s1">load</span><span class="s3">(</span><span class="s1">file</span><span class="s3">)</span>
+                <span class="s0">return </span><span class="s1">data</span><span class="s3">.</span><span class="s1">get</span><span class="s3">(</span><span class="s5">'entries'</span><span class="s3">, {}) </span><span class="s0">if </span><span class="s1">isinstance</span><span class="s3">(</span><span class="s1">data</span><span class="s3">.</span><span class="s1">get</span><span class="s3">(</span><span class="s5">'entries'</span><span class="s3">), </span><span class="s1">dict</span><span class="s3">) </span><span class="s0">else </span><span class="s3">{}</span>
+            <span class="s0">except </span><span class="s1">json</span><span class="s3">.</span><span class="s1">JSONDecodeError</span><span class="s3">:</span>
+                <span class="s1">print</span><span class="s3">(</span><span class="s5">&quot;Error: Could not decode JSON, returning empty entries.&quot;</span><span class="s3">)</span>
+                <span class="s0">return </span><span class="s3">{}</span>
+    <span class="s0">return </span><span class="s3">{}  </span><span class="s2"># Return an empty dictionary if the file doesn't exist</span>
+
+
+<span class="s2"># Function to save entries for a specific user</span>
+<span class="s0">def </span><span class="s1">save_entries</span><span class="s3">(</span><span class="s1">username</span><span class="s3">, </span><span class="s1">entries</span><span class="s3">):</span>
+    <span class="s4">&quot;&quot;&quot;Save journal entries to a JSON file for a specific user.&quot;&quot;&quot;</span>
+    <span class="s1">filename </span><span class="s3">= </span><span class="s5">f'</span><span class="s0">{</span><span class="s1">username</span><span class="s0">}</span><span class="s5">_journal_entries.json'</span>
+    <span class="s0">with </span><span class="s1">open</span><span class="s3">(</span><span class="s1">filename</span><span class="s3">, </span><span class="s5">'w'</span><span class="s3">) </span><span class="s0">as </span><span class="s1">file</span><span class="s3">:</span>
+        <span class="s1">json</span><span class="s3">.</span><span class="s1">dump</span><span class="s3">({</span><span class="s5">'entries'</span><span class="s3">: </span><span class="s1">entries</span><span class="s3">}, </span><span class="s1">file</span><span class="s3">)</span>
+
+
+<span class="s0">def </span><span class="s1">view_entry_names</span><span class="s3">(</span><span class="s1">entries</span><span class="s3">):</span>
+    <span class="s4">&quot;&quot;&quot;Display all journal entry names.&quot;&quot;&quot;</span>
+    <span class="s0">if not </span><span class="s1">entries</span><span class="s3">:</span>
+        <span class="s1">print</span><span class="s3">(</span><span class="s5">&quot;You have no journal entries.&quot;</span><span class="s3">)</span>
+        <span class="s0">return</span>
+    <span class="s1">print</span><span class="s3">(</span><span class="s5">&quot;Your Journal Entry Names:&quot;</span><span class="s3">)</span>
+    <span class="s0">for </span><span class="s1">idx</span><span class="s3">, </span><span class="s1">name </span><span class="s0">in </span><span class="s1">enumerate</span><span class="s3">(</span><span class="s1">entries</span><span class="s3">.</span><span class="s1">keys</span><span class="s3">(), </span><span class="s1">start</span><span class="s3">=</span><span class="s6">1</span><span class="s3">):</span>
+        <span class="s1">print</span><span class="s3">(</span><span class="s5">f&quot;</span><span class="s0">{</span><span class="s1">idx</span><span class="s0">}</span><span class="s5">: </span><span class="s0">{</span><span class="s1">name</span><span class="s0">}</span><span class="s5">&quot;</span><span class="s3">)</span>
+
+<span class="s0">def </span><span class="s1">check_answer</span><span class="s3">(</span><span class="s1">answer</span><span class="s3">):</span>
+    <span class="s0">if </span><span class="s1">answer </span><span class="s3">== </span><span class="s6">1 </span><span class="s0">or </span><span class="s1">answer </span><span class="s3">== </span><span class="s6">2 </span><span class="s0">or </span><span class="s1">answer </span><span class="s3">== </span><span class="s6">3 </span><span class="s0">or </span><span class="s1">answer </span><span class="s3">== </span><span class="s6">4 </span><span class="s0">or </span><span class="s1">answer </span><span class="s3">== </span><span class="s6">5</span><span class="s3">:</span>
+        <span class="s0">return True</span>
+
+    <span class="s0">else</span><span class="s3">:</span>
+        <span class="s1">print</span><span class="s3">(</span><span class="s5">&quot;This is an invalid answer. Please try again and only input a number between 1 and 5.&quot;</span><span class="s3">)</span>
+        <span class="s0">return False</span>
+
+
+<span class="s0">def </span><span class="s1">chatbot</span><span class="s3">():</span>
+    <span class="s1">username </span><span class="s3">= </span><span class="s1">input</span><span class="s3">(</span><span class="s5">&quot;What is your username? &quot;</span><span class="s3">)</span>
+    <span class="s1">entries </span><span class="s3">= </span><span class="s1">load_entries</span><span class="s3">(</span><span class="s1">username</span><span class="s3">)  </span><span class="s2"># Load entries at the start</span>
+    <span class="s1">print</span><span class="s3">(</span><span class="s5">&quot;Welcome to your journal!&quot;</span><span class="s3">)</span>
+    <span class="s1">choice </span><span class="s3">= </span><span class="s1">input</span><span class="s3">(</span><span class="s5">&quot;Would you like to journal, or would you rather take a short survey to see where you're at? &quot;</span>
+                   <span class="s5">&quot;(survey/journal): &quot;</span><span class="s3">)</span>
+    <span class="s0">if </span><span class="s1">choice</span><span class="s3">.</span><span class="s1">lower</span><span class="s3">() == </span><span class="s5">&quot;journal&quot;</span><span class="s3">:</span>
+        <span class="s0">while True</span><span class="s3">:</span>
+            <span class="s1">command </span><span class="s3">= </span><span class="s1">input</span><span class="s3">(</span><span class="s5">&quot;What would you like to do? (write/view/exit): &quot;</span><span class="s3">).</span><span class="s1">strip</span><span class="s3">().</span><span class="s1">lower</span><span class="s3">()</span>
+
+            <span class="s0">if </span><span class="s1">command </span><span class="s3">== </span><span class="s5">'exit'</span><span class="s3">:</span>
+                <span class="s2"># Save entries before exiting</span>
+                <span class="s1">save_entries</span><span class="s3">(</span><span class="s1">username</span><span class="s3">, </span><span class="s1">entries</span><span class="s3">)</span>
+                <span class="s1">print</span><span class="s3">(</span><span class="s5">&quot;Goodbye!&quot;</span><span class="s3">)</span>
+                <span class="s0">break</span>
+            <span class="s0">elif </span><span class="s1">command </span><span class="s3">== </span><span class="s5">'write'</span><span class="s3">:</span>
+                <span class="s1">entry_name </span><span class="s3">= </span><span class="s1">input</span><span class="s3">(</span><span class="s5">&quot;Enter a name for your journal entry: &quot;</span><span class="s3">)</span>
+                <span class="s1">entry_content </span><span class="s3">= </span><span class="s1">input</span><span class="s3">(</span><span class="s5">&quot;Enter your journal entry: &quot;</span><span class="s3">)</span>
+                <span class="s1">entries</span><span class="s3">[</span><span class="s1">entry_name</span><span class="s3">] = </span><span class="s1">entry_content  </span><span class="s2"># Save the entry with its name</span>
+                <span class="s1">print</span><span class="s3">(</span><span class="s5">&quot;Your entry has been saved.&quot;</span><span class="s3">)</span>
+            <span class="s0">elif </span><span class="s1">command </span><span class="s3">== </span><span class="s5">'view'</span><span class="s3">:</span>
+                <span class="s1">view_entry_names</span><span class="s3">(</span><span class="s1">entries</span><span class="s3">)  </span><span class="s2"># Display entry names</span>
+                <span class="s1">entry_number </span><span class="s3">= </span><span class="s1">input</span><span class="s3">(</span><span class="s5">&quot;Enter the number of the entry you want to view (or 'back' to go back): &quot;</span><span class="s3">).</span><span class="s1">strip</span><span class="s3">()</span>
+                <span class="s0">if </span><span class="s1">entry_number</span><span class="s3">.</span><span class="s1">lower</span><span class="s3">() == </span><span class="s5">'back'</span><span class="s3">:</span>
+                    <span class="s0">continue</span>
+                <span class="s0">try</span><span class="s3">:</span>
+                    <span class="s1">index </span><span class="s3">= </span><span class="s1">int</span><span class="s3">(</span><span class="s1">entry_number</span><span class="s3">) - </span><span class="s6">1  </span><span class="s2"># Convert to zero-based index</span>
+                    <span class="s1">names_list </span><span class="s3">= </span><span class="s1">list</span><span class="s3">(</span><span class="s1">entries</span><span class="s3">.</span><span class="s1">keys</span><span class="s3">())</span>
+                    <span class="s0">if </span><span class="s6">0 </span><span class="s3">&lt;= </span><span class="s1">index </span><span class="s3">&lt; </span><span class="s1">len</span><span class="s3">(</span><span class="s1">names_list</span><span class="s3">):</span>
+                        <span class="s1">entry_name </span><span class="s3">= </span><span class="s1">names_list</span><span class="s3">[</span><span class="s1">index</span><span class="s3">]</span>
+                        <span class="s1">print</span><span class="s3">(</span><span class="s5">f&quot;Entry '</span><span class="s0">{</span><span class="s1">entry_name</span><span class="s0">}</span><span class="s5">': </span><span class="s0">{</span><span class="s1">entries</span><span class="s3">[</span><span class="s1">entry_name</span><span class="s3">]</span><span class="s0">}</span><span class="s5">&quot;</span><span class="s3">)</span>
+                    <span class="s0">else</span><span class="s3">:</span>
+                        <span class="s1">print</span><span class="s3">(</span><span class="s5">&quot;Invalid entry number.&quot;</span><span class="s3">)</span>
+                <span class="s0">except </span><span class="s1">ValueError</span><span class="s3">:</span>
+                    <span class="s1">print</span><span class="s3">(</span><span class="s5">&quot;Please enter a valid number.&quot;</span><span class="s3">)</span>
+            <span class="s0">else</span><span class="s3">:</span>
+                <span class="s1">print</span><span class="s3">(</span><span class="s5">&quot;Unknown command. Please type 'write', 'view', or 'exit'.&quot;</span><span class="s3">)</span>
+
+    <span class="s0">elif </span><span class="s1">choice</span><span class="s3">.</span><span class="s1">lower</span><span class="s3">() == </span><span class="s5">&quot;survey&quot;</span><span class="s3">:</span>
+        <span class="s1">score </span><span class="s3">= </span><span class="s6">0</span>
+        <span class="s1">print</span><span class="s3">(</span><span class="s5">&quot;Please answer the following questions about how you are feeling with numbers 1-5, with 1 being the worst and 5 being the best.&quot;</span><span class="s3">)</span>
+        <span class="s1">firstAnswer </span><span class="s3">= </span><span class="s1">int</span><span class="s3">(</span><span class="s1">input</span><span class="s3">(</span><span class="s5">&quot;How would you rate your overall mental well-being currently? &quot;</span><span class="s3">))</span>
+        <span class="s0">if </span><span class="s1">check_answer</span><span class="s3">(</span><span class="s1">firstAnswer</span><span class="s3">):</span>
+            <span class="s1">score </span><span class="s3">+= </span><span class="s1">firstAnswer</span>
+            <span class="s1">secondAnswer </span><span class="s3">= </span><span class="s1">int</span><span class="s3">(</span><span class="s1">input</span><span class="s3">(</span><span class="s5">&quot;How would you rate your current stress levels on average? &quot;</span><span class="s3">))</span>
+
+            <span class="s0">if </span><span class="s1">check_answer</span><span class="s3">(</span><span class="s1">secondAnswer</span><span class="s3">):</span>
+                <span class="s1">score </span><span class="s3">+= </span><span class="s1">secondAnswer</span>
+                <span class="s1">thirdAnswer </span><span class="s3">= </span><span class="s1">int</span><span class="s3">(</span><span class="s1">input</span><span class="s3">(</span><span class="s5">&quot;Do you feel as though you have a support system regarding your mental health? &quot;</span><span class="s3">))</span>
+
+                <span class="s0">if </span><span class="s1">check_answer</span><span class="s3">(</span><span class="s1">thirdAnswer</span><span class="s3">):</span>
+                    <span class="s1">score </span><span class="s3">+= </span><span class="s1">thirdAnswer</span>
+
+        <span class="s0">while </span><span class="s1">check_answer</span><span class="s3">(</span><span class="s1">firstAnswer</span><span class="s3">) </span><span class="s0">and </span><span class="s1">check_answer</span><span class="s3">(</span><span class="s1">secondAnswer</span><span class="s3">) </span><span class="s0">and </span><span class="s1">check_answer</span><span class="s3">(</span><span class="s1">thirdAnswer</span><span class="s3">):</span>
+            <span class="s0">if </span><span class="s1">score </span><span class="s3">&gt;= </span><span class="s6">12</span><span class="s3">:</span>
+                <span class="s1">print</span><span class="s3">(</span><span class="s5">&quot;Congratulations! You seem to be doing very well in terms of your mental health, but it is important &quot;</span>
+                      <span class="s5">&quot;to remember that this may not always be the case. Make sure to reach out for help if you need it, as &quot;</span>
+                      <span class="s5">&quot;there are plenty of existing resources and websites for you to go to, and people to talk to.&quot;</span><span class="s3">)</span>
+                <span class="s0">break</span>
+            <span class="s0">elif </span><span class="s1">score </span><span class="s3">&lt;= </span><span class="s6">11 </span><span class="s0">and </span><span class="s1">score </span><span class="s3">&gt;= </span><span class="s6">8</span><span class="s3">:</span>
+                <span class="s1">print</span><span class="s3">(</span><span class="s5">&quot;You don't sound like you're doing too well. I recommend talking to a trusted family member or even and &quot;</span>
+                      <span class="s5">&quot;trying to understand why you might be feeling this way. Make sure to relieve yourself of any unnecessary stressors &quot;</span>
+                      <span class="s5">&quot;and try to maintain a positive attitude! Make sure to check out resources like Never a Bother, or the institute for Mental Health &quot;</span>
+                      <span class="s5">&quot;to find the help you need. Always remember that you and your mental health are important!&quot;</span><span class="s3">)</span>
+                <span class="s0">break</span>
+            <span class="s0">else</span><span class="s3">:</span>
+                <span class="s1">print</span><span class="s3">(</span><span class="s5">&quot;There are many resources available for you to get the help you need. According to your answers, your mental health &quot;</span>
+                      <span class="s5">&quot;seems to be suffering and this can be detrimental for you and your physical health as well. Make sure to check out &quot;</span>
+                      <span class="s5">&quot;websites like the National Institute for Mental Health or even websites like Never a Bother, where resources &quot;</span>
+                      <span class="s5">&quot;and phone numbers are available to you for 24/7 use. Remember that you should prioritize your mental health &quot;</span>
+                      <span class="s5">&quot;just as much as you prioritize other parts of your life. You are important.&quot;</span><span class="s3">)</span>
+                <span class="s0">break</span>
+
+    <span class="s0">elif </span><span class="s1">choice</span><span class="s3">.</span><span class="s1">lower</span><span class="s3">() == </span><span class="s5">&quot;quit&quot;</span><span class="s3">:</span>
+        <span class="s1">print</span><span class="s3">(</span><span class="s5">&quot;Goodbye!&quot;</span><span class="s3">)</span>
+    <span class="s0">else</span><span class="s3">:</span>
+        <span class="s1">print</span><span class="s3">(</span><span class="s5">&quot;Unknown command. Please type 'journal', 'survey', or 'exit'.&quot;</span><span class="s3">)</span>
+
+
+<span class="s1">chatbot</span><span class="s3">()</span>
+
+</pre>
+</body>
+</html>
